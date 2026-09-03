@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="ZHCM_IEPF_DATA_SRV" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="DividendExcel" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TRANS_ID"/>
+                    <PropertyRef Name="DP_ID_CLIENT_ID_FOLIO_NO"/>
+                </Key>
+                <Property Name="TRANS_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DP_ID_CLIENT_ID_FOLIO_NO" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="INVESTORS_NAME" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DIVIDEND_AMOUNT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ADDRESS1" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ADDRESS2" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ADDRESS3" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="ADDRESS4" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="PIN" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="Due_Date" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="REMARKS" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="Header" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TRANS_ID"/>
+                </Key>
+                <Property Name="UPLOAD_TYPE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Dividend(D)/Shares(S)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UPLOAD_TYPE_TEXT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TRANS_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CONTROL_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="LOT_NO" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FIN_YR_START" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FIN_YR" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="RECORD_TYPE_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="RECORD_TYPE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DP_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CLIENT_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FOLIO_NO" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="STATUS" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="STATUS_TEXT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UPLOADED_BY" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UPLOADED_BY_NAME" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UPLOADED_DATE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CONFIRMED_BY" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CONFIRMED_DATE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CLOSED_BY" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="CLOSED_DATE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FOR_YEAR" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FOR_MONTH" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FOR_MON_YEAR" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="FINAL_UPLOADED" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_NAME" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="BUKRS" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_GRADE_CODE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_SUB_GROUP" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_SUB_GROUP_TEXT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_SUB_AREA" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_SUB_AREA_TEXT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_DEPT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="EMP_POSITION" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <NavigationProperty Name="HeaderToDividend" Relationship="ZHCM_IEPF_DATA_SRV.HeaderToDividend" FromRole="FromRole_HeaderToDividend" ToRole="ToRole_HeaderToDividend"/>
+                <NavigationProperty Name="HeaderToShares" Relationship="ZHCM_IEPF_DATA_SRV.HeaderToShares" FromRole="FromRole_HeaderToShares" ToRole="ToRole_HeaderToShares"/>
+            </EntityType>
+            <EntityType Name="SharesExcel" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="TRANS_ID"/>
+                    <PropertyRef Name="DP_ID_CLIENT_ID_FOLIO_NO"/>
+                </Key>
+                <Property Name="TRANS_ID" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="DP_ID_CLIENT_ID_FOLIO_NO" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="INVESTORS_NAME" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="TOTAL_SHARES" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="REMARKS" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="F4_UploadType" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="UPLOAD_TYPE"/>
+                </Key>
+                <Property Name="UPLOAD_TYPE" Type="Edm.String" Nullable="false" sap:unicode="false" sap:label="Dividend(D)/Shares(S)" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="UPLOAD_TYPE_TEXT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <EntityType Name="F4_Status" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="STATUS"/>
+                </Key>
+                <Property Name="STATUS" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+                <Property Name="STATUS_TEXT" Type="Edm.String" Nullable="false" sap:unicode="false" sap:creatable="false" sap:updatable="false" sap:sortable="false" sap:filterable="false"/>
+            </EntityType>
+            <Association Name="HeaderToShares" sap:content-version="1">
+                <End Type="ZHCM_IEPF_DATA_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToShares"/>
+                <End Type="ZHCM_IEPF_DATA_SRV.SharesExcel" Multiplicity="*" Role="ToRole_HeaderToShares"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToShares">
+                        <PropertyRef Name="TRANS_ID"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToShares">
+                        <PropertyRef Name="TRANS_ID"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="HeaderToDividend" sap:content-version="1">
+                <End Type="ZHCM_IEPF_DATA_SRV.Header" Multiplicity="1" Role="FromRole_HeaderToDividend"/>
+                <End Type="ZHCM_IEPF_DATA_SRV.DividendExcel" Multiplicity="*" Role="ToRole_HeaderToDividend"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromRole_HeaderToDividend">
+                        <PropertyRef Name="TRANS_ID"/>
+                    </Principal>
+                    <Dependent Role="ToRole_HeaderToDividend">
+                        <PropertyRef Name="TRANS_ID"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="ZHCM_IEPF_DATA_SRV_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="DividendExcelSet" EntityType="ZHCM_IEPF_DATA_SRV.DividendExcel" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="HeaderSet" EntityType="ZHCM_IEPF_DATA_SRV.Header" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="SharesExcelSet" EntityType="ZHCM_IEPF_DATA_SRV.SharesExcel" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="F4_UploadTypeSet" EntityType="ZHCM_IEPF_DATA_SRV.F4_UploadType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="F4_StatusSet" EntityType="ZHCM_IEPF_DATA_SRV.F4_Status" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:pageable="false" sap:addressable="false" sap:content-version="1"/>
+                <AssociationSet Name="HeaderToDividend_AssocSet" Association="ZHCM_IEPF_DATA_SRV.HeaderToDividend" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToDividend"/>
+                    <End EntitySet="DividendExcelSet" Role="ToRole_HeaderToDividend"/>
+                </AssociationSet>
+                <AssociationSet Name="HeaderToShares_AssocSet" Association="ZHCM_IEPF_DATA_SRV.HeaderToShares" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="HeaderSet" Role="FromRole_HeaderToShares"/>
+                    <End EntitySet="SharesExcelSet" Role="ToRole_HeaderToShares"/>
+                </AssociationSet>
+            </EntityContainer>
+            <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <atom:link rel="self" href="https://VHNPDDNHCI.SAP.NHPC.IN:44300/sap/opu/odata/sap/ZHCM_IEPF_DATA_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="https://VHNPDDNHCI.SAP.NHPC.IN:44300/sap/opu/odata/sap/ZHCM_IEPF_DATA_SRV/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

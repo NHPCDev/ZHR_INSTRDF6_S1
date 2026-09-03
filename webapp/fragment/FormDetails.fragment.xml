@@ -1,0 +1,53 @@
+<core:FragmentDefinition
+    xmlns="sap.m" 
+    xmlns:core="sap.ui.core" 
+    xmlns:f="sap.ui.layout.form"
+    xmlns:app="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+    class="sapUiSizeCompact">
+    <f:SimpleForm editable="true" layout="ColumnLayout">
+        <Label text="{i18n>empNo}"></Label>
+        <Input id="inputPernr" app:valuehelp="EmployeeNumber" value="{viewModel>/formDetails/Pernr}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" required="true" valueState="{viewModel>/valueState/Pernr}" valueStateText="{viewModel>/valueStateText/Pernr}" valueHelpRequest=".onValueHelpRequest" showValueHelp="true" change=".onValueHelpChange" />
+        <Label text="{i18n>name}"></Label>
+        <Input value="{viewModel>/formDetails/Empname}" editable="false" required="true" valueState="{viewModel>/valueState/Empname}" valueStateText="{viewModel>/valueStateText/Empname}" />
+        <Label text="{i18n>designation}"></Label>
+        <Input value="{viewModel>/formDetails/Designation}" editable="false" />
+        <Label text="{i18n>department}"></Label>
+        <Input value="{viewModel>/formDetails/Dept}" editable="false" />
+        <Label text="{i18n>nameOfTheImmediateRelative}"></Label>
+        <ComboBox id="idRelativeName" selectedKey="{viewModel>/formDetails/Relativename}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" valueState="{viewModel>/valueState/Relativename}" valueStateText="{viewModel>/valueStateText/Relativename}" required="true" change=".onRelativeChange" items="{/RelativeMasterSet}" >
+            <core:Item key="{NameOfImmediateRelatives}" text="{NameOfImmediateRelatives}"></core:Item>
+        </ComboBox>
+        <Label text="{i18n>panOfTheImmediateRelative}"></Label>
+        <Input value="{viewModel>/formDetails/RelativePAN}" editable="false" />
+        <Label text="{i18n>dateOfPrvTxn}"></Label>
+        <DatePicker value="{viewModel>/formDetails/DateprvTxn}" valueFormat="yyyyMMdd" displayFormat="dd.MM.yyyy" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" change="onDateChange" valueState="{viewModel>/valueState/DateprvTxn}" valueStateText="{viewModel>/valueStateText/DateprvTxn}" required="true" />
+        <Label text="{i18n>natureOfPrvTxn}"></Label>
+        <ComboBox selectedKey="{viewModel>/formDetails/NatureprvTxn}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" valueState="{viewModel>/valueState/NatureprvTxn}" valueStateText="{viewModel>/valueStateText/NatureprvTxn}" required="true" change=".onComboboxChange" items="{/ZHR_CDS_IT_TRANSACTION2_F4H}" >
+            <core:Item key="{StatusCode}" text="{Statustext}"></core:Item>
+        </ComboBox>
+        <Label text="{i18n>natureOfSecurities}"></Label>
+        <ComboBox selectedKey="{viewModel>/formDetails/NatureofSecurity}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" valueState="{viewModel>/valueState/NatureofSecurity}" valueStateText="{viewModel>/valueStateText/NatureofSecurity}" required="true" change=".onComboboxChange" items="{/ZHR_CDS_IT_SECURITYNATURE_F4}" >
+            <core:Item key="{StatusCode}" text="{Statustext}"></core:Item>
+        </ComboBox>
+        <Label text="{i18n>dateOfWaiverRequest}"></Label>
+        <DatePicker value="{viewModel>/formDetails/WaiverReqDate}" valueFormat="yyyyMMdd" displayFormat="dd.MM.yyyy" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" change="onDateChange" valueState="{viewModel>/valueState/WaiverReqDate}" valueStateText="{viewModel>/valueStateText/WaiverReqDate}" required="true" />
+        <Label text="{i18n>numberOfSharesSecurities}"></Label>
+        <Input value="{viewModel>/formDetails/Shareno}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" liveChange="onNumberInputChange" valueState="{viewModel>/valueState/ShareNo}" valueStateText="{viewModel>/valueStateText/ShareNo}" required="true" change="onMandatoryChange" />
+        <Label text="{i18n>considerationValue}"></Label>
+        <Input value="{path:'viewModel>/formDetails/Considrationvalue',formatter:'.formatter.formatAmountToINR'}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" valueState="{viewModel>/valueState/ConsiderationValue}" valueStateText="{viewModel>/valueStateText/ConsiderationValue}" required="true" change=".onAmountChange">
+            <customData>
+                <core:CustomData
+                    key="path"
+                    value="/formDetails/Considrationvalue"
+                    writeToDom="false"
+                />
+            </customData>
+        </Input>
+        <Label text="{i18n>reasonsForWaiver}"></Label>
+        <Input value="{viewModel>/formDetails/Waiverreason}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" valueState="{viewModel>/valueState/Waiverreason}" valueStateText="{viewModel>/valueStateText/Waiverreason}" required="true" change="onMandatoryChange" />
+        <Label text="{i18n>dateOfCommunication}"></Label>
+        <DatePicker value="{viewModel>/formDetails/Waivercommdate}" valueFormat="yyyyMMdd" displayFormat="dd.MM.yyyy" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" change="onDateChange" valueState="{viewModel>/valueState/Waivercommdate}" valueStateText="{viewModel>/valueStateText/Waivercommdate}" required="true" />
+        <Label text="{i18n>remarks}"></Label>
+        <TextArea value="{viewModel>/formDetails/Remarks}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" required="true" rows="3" valueState="{viewModel>/valueState/Remarks}" valueStateText="{viewModel>/valueStateText/Remarks}" change="onMandatoryChange" />
+    </f:SimpleForm>
+</core:FragmentDefinition>
