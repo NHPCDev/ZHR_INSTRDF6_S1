@@ -120,6 +120,7 @@
                     class="sapUiSmallMarginTop"
                     alternateRowColors="true"
                     selectionBehavior="RowOnly"
+                    threshold="20"
                 >
                     <table:rowMode>
                         <rowmodes:Fixed

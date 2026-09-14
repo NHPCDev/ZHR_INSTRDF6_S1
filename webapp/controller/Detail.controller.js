@@ -380,6 +380,7 @@ sap.ui.define([
             }
             const oRegex = /^\d+(\.\d{0,2})?$/
             if (!oRegex.test(sParsedValue)) {
+                oSrc.setValue("");
                 oViewModel.setProperty("/formDetails/Considrationvalue", "");
                 oViewModel.setProperty("/valueState/ConsiderationValue", "Error");
                 oViewModel.setProperty("/valueStateText/ConsiderationValue", oResourceBundle.getText("errMsgPositiveValue"));
