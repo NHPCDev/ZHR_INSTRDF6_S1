@@ -38,22 +38,24 @@ sap.ui.define([
             try {
                 await this.resetValueStates();
                 await this.getDefaultEmployeeDetails();
-                const oBinding = this.byId("idRelativeName").getBinding("items");
+                // const oBinding = this.byId("idRelativeName").getBinding("items");
                 let sPernrName = sEmployeeId;
-                if (sPernrName) {
-                    await new Promise((resolve) => {
-                        oBinding.attachEventOnce("dataReceived", resolve);
-                        oBinding.filter([
-                            new Filter(
-                                "Pernr",
-                                FilterOperator.EQ,
-                                sPernrName
-                            )
-                        ]);
-                    });
+                if (sPernrName !== "New") {
+                    this.onPernrSelect(sPernrName);
+                //     await new Promise((resolve) => {
+                //         oBinding.attachEventOnce("dataReceived", resolve);
+                //         oBinding.filter([
+                //             new Filter(
+                //                 "Pernr",
+                //                 FilterOperator.EQ,
+                //                 sPernrName
+                //             )
+                //         ]);
+                //     });
                 } else {
-                    oBinding.filter([]);
+                //     oBinding.filter([]);
                 }
+
                 await this.setTransactionData();
             } catch (error) {
                 messenger.error(error, () => {
@@ -169,7 +171,10 @@ sap.ui.define([
                         }
                     });
                 });
+                await this.readAttachmentsData();
             } else {
+                oViewModel.setProperty("/attachmentList", []);
+                oViewModel.setProperty("/canEdit", true);
                 oViewModel.setProperty("/formDetails", {
                     Status: "New"
                 });
@@ -184,6 +189,8 @@ sap.ui.define([
                 sText = oResourceBundle.getText("CONFIRM_TEXT_FINAL_REQUEST"),
                 bProceed = this.validateSubmitRequestDetails();
             var oModel = this.getModel();
+            let oViewModel = this.getModel("viewModel");
+            let that = this;
             if (bProceed) {
                 messenger.confirm(sTitle, sText, "Confirm", null, function () {
                     BusyIndicator.show(0);
@@ -192,6 +199,7 @@ sap.ui.define([
                     oModel.create("/WaiverregisterSet", oPayload, {
                         success: function (oResp) {
                             BusyIndicator.hide();
+                            that.fileUpload(oViewModel.getProperty("/attachmentList"), "Submit", oResp.Sno);
                             messenger.success(oResourceBundle.getText("manageWaiverFinalSuccessMsg", oResp.Sno), () => {
                                 this.getRouter().navTo("RouteDashboard", {}, {}, true);
                             });
@@ -209,6 +217,8 @@ sap.ui.define([
                 sTitle = oResourceBundle.getText("CONFIRM_TITLE"),
                 sText = oResourceBundle.getText("CONFIRM_TEXT_SAVE_REQUEST");
             var oModel = this.getModel();
+            let oViewModel = this.getModel("viewModel");
+            let that = this;
             messenger.confirm(sTitle, sText, "Confirm", null, function () {
                 BusyIndicator.show(0);
                 this.sActionFlag = "Saved";
@@ -216,6 +226,7 @@ sap.ui.define([
                 oModel.create("/WaiverregisterSet", oPayload, {
                     success: function (oResp) {
                         BusyIndicator.hide();
+                        that.fileUpload(oViewModel.getProperty("/attachmentList"), "Save", oResp.Sno);
                         messenger.success(oResourceBundle.getText("manageWaiverFinalSaveMsg", oResp.Sno), () => {
                             this.getRouter().navTo("RouteDashboard", {}, {}, true);
                         });
@@ -297,14 +308,6 @@ sap.ui.define([
             } else {
                 oViewModel.setProperty("/valueState/Remarks", "None");
                 oViewModel.setProperty("/valueStateText/Remarks", "");
-            }
-            if (!oFormDetails.Relativename) {
-                aErrors.push(oResourceBundle.getText("relativeNameErrorMsg"));
-                oViewModel.setProperty("/valueState/Relativename", "Error");
-                oViewModel.setProperty("/valueStateText/Relativename", oResourceBundle.getText("relativeNameErrorMsg"));
-            } else {
-                oViewModel.setProperty("/valueState/Relativename", "None");
-                oViewModel.setProperty("/valueStateText/Relativename", "");
             }
             if (!oFormDetails.Waiverreason) {
                 aErrors.push(oResourceBundle.getText("waiverReasonErrorMsg"));
@@ -586,7 +589,13 @@ sap.ui.define([
             var sEmpId = oEvent.getParameter("value");
             var oInput = oEvent.getSource();
             if (!sEmpId) {
-                this.getModel("filterModel").setProperty("/EmpId", "");
+                let oViewModel = this.getModel("viewModel");
+                oViewModel.setProperty("/formDetails/Pernr", "");
+                oViewModel.setProperty("/formDetails/Empname", "");
+                oViewModel.setProperty("/formDetails/Designation", "");
+                oViewModel.setProperty("/formDetails/Dept", "");
+                oViewModel.setProperty("/formDetails/Relativename", "");
+                oViewModel.setProperty("/formDetails/RelativePAN", "");
                 return;
             }
             if (!/^\d+$/.test(sEmpId)) {
@@ -622,20 +631,49 @@ sap.ui.define([
         },
         onPernrSelect: function (sPernr) {
             let sValue = sPernr;
-            const oBinding = this.byId("idRelativeName").getBinding("items");
-            if (sPernr) {
-                oBinding.filter([
-                    new Filter(
+            // const oBinding = this.byId("idRelativeName").getBinding("items");
+            let oFilters = [new Filter(
                         "Pernr",
                         FilterOperator.EQ,
                         sPernr
-                    )
-                ]);
-            } else {
-                oBinding.filter([]);
-            }
+                    ), 
+                new Filter(
+                    "DropDown",
+                    FilterOperator.EQ,
+                    "X"
+                )];
+            // if (sPernr) {
+            //     oBinding.filter([
+            //         new Filter(
+            //             "Pernr",
+            //             FilterOperator.EQ,
+            //             sPernr
+            //         )
+            //     ]);
+            // } else {
+            //     oBinding.filter([]);
+            // }
+            const oODataModel = this.getModel();
+            const oViewModel = this.getModel("viewModel");
+
+            oODataModel.read("/RelativeMasterSet", {
+                filters:oFilters,
+                success: function (oData) {
+                    let aRelatives = oData.results || [];
+                    aRelatives.unshift({
+                        Pernr: "",
+                        NameOfImmediateRelatives: "NA"
+                    });
+                    oViewModel.setProperty("/RelativeMasterSet", aRelatives);
+                    oViewModel.setProperty("/formDetails/Relativename", "NA");
+                    oViewModel.setProperty("/formDetails/RelativePAN", "");
+                }.bind(this),
+                error: function (oError) {
+                    console.error("Error loading Relative Master:", oError);
+                }
+            });
+
             let oModel = this.getModel(),
-                oViewModel = this.getModel("viewModel"),
                 Createdby = oViewModel.getProperty("/formDetails/Createdby") || "X";
             let aFilters = [
                 new Filter(
@@ -685,7 +723,6 @@ sap.ui.define([
             }
             var oData = oEvent.getSource().getSelectedItem()?.getBindingContext().getObject();
             oViewModel.setProperty("/formDetails/RelativePAN", oData.PanOfImmediateRelative);
-
         },
     });
 });

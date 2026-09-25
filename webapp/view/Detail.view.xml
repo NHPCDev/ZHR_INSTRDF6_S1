@@ -88,6 +88,7 @@
                             <uxap:ObjectPageSection
                                 title="{i18n>form6}"
                                 titleUppercase="false"
+                                showTitle="false"                                
                             >
                                 <uxap:subSections>
                                     <uxap:ObjectPageSubSection>
@@ -95,6 +96,23 @@
                                             <VBox>
                                                 <core:Fragment
                                                     fragmentName="com.nhpc.zhrinstrdf6s1.fragment.FormDetails"
+                                                    type="XML"
+                                                />
+                                            </VBox>
+                                        </uxap:blocks>
+                                    </uxap:ObjectPageSubSection>
+                                </uxap:subSections>
+                            </uxap:ObjectPageSection>
+                            <uxap:ObjectPageSection
+                                title="{i18n>attachments}"
+                                titleUppercase="false"
+                            >
+                                <uxap:subSections>
+                                    <uxap:ObjectPageSubSection>
+                                        <uxap:blocks>
+                                            <VBox>
+                                                <core:Fragment
+                                                    fragmentName="com.nhpc.zhrinstrdf6s1.fragment.Attachments"
                                                     type="XML"
                                                 />
                                             </VBox>

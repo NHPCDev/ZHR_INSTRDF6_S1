@@ -14,8 +14,8 @@
         <Label text="{i18n>department}"></Label>
         <Input value="{viewModel>/formDetails/Dept}" editable="false" />
         <Label text="{i18n>nameOfTheImmediateRelative}"></Label>
-        <ComboBox id="idRelativeName" selectedKey="{viewModel>/formDetails/Relativename}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' }" valueState="{viewModel>/valueState/Relativename}" valueStateText="{viewModel>/valueStateText/Relativename}" required="true" change=".onRelativeChange" items="{/RelativeMasterSet}" >
-            <core:Item key="{NameOfImmediateRelatives}" text="{NameOfImmediateRelatives}"></core:Item>
+        <ComboBox id="idRelativeName" selectedKey="{viewModel>/formDetails/Relativename}" editable="{= ${viewModel>/formDetails/Status} !== 'Submitted' &amp;&amp; !!${viewModel>/formDetails/Pernr} }" valueState="{viewModel>/valueState/Relativename}" valueStateText="{viewModel>/valueStateText/Relativename}" change=".onRelativeChange" items="{viewModel>/RelativeMasterSet}" >
+            <core:Item key="{viewModel>NameOfImmediateRelatives}" text="{viewModel>NameOfImmediateRelatives}"></core:Item>
         </ComboBox>
         <Label text="{i18n>panOfTheImmediateRelative}"></Label>
         <Input value="{viewModel>/formDetails/RelativePAN}" editable="false" />

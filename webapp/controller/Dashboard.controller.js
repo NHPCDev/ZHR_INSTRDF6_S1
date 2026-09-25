@@ -13,9 +13,10 @@ sap.ui.define([
     "sap/m/Column",
     "sap/m/Text",
     "sap/ui/core/BusyIndicator",
-], (BaseController, formatter, messenger, Filter, FilterOperator, Spreadsheet, Fragment, JSONModel, SearchField, UIColumn, Label, MColumn, Text,BusyIndicator) => {
+    "sap/ui/export/library"
+], (BaseController, formatter, messenger, Filter, FilterOperator, Spreadsheet, Fragment, JSONModel, SearchField, UIColumn, Label, MColumn, Text, BusyIndicator,exportLibrary) => {
     "use strict";
-
+    var EdmType = exportLibrary.EdmType;
     return BaseController.extend("com.nhpc.zhrinstrdf6s1.controller.Dashboard", {
         formatter: formatter,
         onInit() {
@@ -113,40 +114,22 @@ sap.ui.define([
             }
         },
         onDownload: function () {
-            var oModel = this.getModel();
-            var oResourceBundle = this.getResourceBundle();
-            BusyIndicator.show(0);
-            oModel.read("/WaiverregisterSet", {
-                success: function (oData) {
-                    var aData = oData.results.map(function (oData) {
-                        var oRow = Object.assign({}, oData);
-                        oRow.Waivercommdate =
-                            formatter.formatDate(oRow.Waivercommdate);
-                        oRow.Createdon =
-                            formatter.formatDate(oRow.Createdon);
-                        return oRow;
-                    });
-                    var aCols = this.createColumnConfig();
-                    var oSettings = {
-                        workbook: {
-                            columns: aCols
-                        },
-                        dataSource: aData,
-                        fileType: "xlsx",
-                        fileName: oResourceBundle.getText("title")
-                    };
-                    var oSheet = new Spreadsheet(oSettings);
-                    oSheet.build()
-                        .finally(function () {
-                            oSheet.destroy();
-                            BusyIndicator.hide();
-                        });
-                }.bind(this),
-                error: function () {
-                    BusyIndicator.hide();
-                    messenger.error(oResourceBundle.getText("failedToDownloadData"));
-                }
-            });
+            var oTable = this.byId("idDashboardTable");
+            var oBinding = oTable.getBinding("rows");
+            var aCols = this.createColumnConfig();
+            var oSettings = {
+                workbook: {
+                    columns: aCols
+                },
+                dataSource: oBinding,
+                fileType: "xlsx",
+                fileName: this.getResourceBundle().getText("title")
+            };
+            var oSheet = new Spreadsheet(oSettings);
+            oSheet.build()
+                .finally(function () {
+                    oSheet.destroy();
+                });
         },
         createColumnConfig: function () {
             var aCols = [];
@@ -188,7 +171,10 @@ sap.ui.define([
             });
             aCols.push({
                 label: this.getResourceBundle().getText("dateOfCommunication"),
-                property: "Waivercommdate"
+                property: "Waivercommdate",
+                type: EdmType.Date,
+                inputFormat: "yyyymmdd",
+                format: "dd.mm.yyyy"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("remarks"),
@@ -200,7 +186,10 @@ sap.ui.define([
             });
             aCols.push({
                 label: this.getResourceBundle().getText("createdOn"),
-                property: "Createdon"
+                property: "Createdon",
+                type: EdmType.Date,
+                inputFormat: "yyyymmdd",
+                format: "dd.mm.yyyy"
             });
             aCols.push({
                 label: this.getResourceBundle().getText("status"),

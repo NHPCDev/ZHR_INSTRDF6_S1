@@ -585,7 +585,425 @@ sap.ui.define([
                 sValue = sValue.replace(/\D/g, "");
                 oEvent.getSource().setValue(sValue);
             },
-           
-            
+
+            openPreview: function (oEvent) {
+                const oSource = oEvent.getSource();
+                const oBindingContext = oSource.getBindingContext("viewModel");
+
+                if (oBindingContext && this.oUploadPlugin) {
+                    this.oUploadPlugin.openFilePreview(oBindingContext);
+                }
+            },
+
+            readAttachmentsData: function () {
+                var oViewModel = this.getView().getModel("viewModel"),
+                    oModel = this.getModel(),
+                    sApplicationNo = oViewModel.getProperty("/Sno"),
+                    sPernr = oViewModel.getProperty("/formDetails/Pernr");
+                var aFilters = [];
+                aFilters.push(new Filter("ApplicationNo", FilterOperator.EQ, sApplicationNo));
+                aFilters.push(new Filter("Pernr", FilterOperator.EQ, sPernr));
+                aFilters.push(new Filter("Form", FilterOperator.EQ, "6"));
+                BusyIndicator.show();
+                oModel.read(`/AttachmentEntitySet`, {
+                    filters: aFilters,
+                    success: function (oResp) {
+                        if (oResp.results && oResp.results.length > 0) {
+                            for (var i = 0; i < oResp.results.length; i++) {
+                                var sFileName = oResp.results[i].Filename;
+                                var sDocId = oResp.results[i].DocID;
+                                var sApplicationNo = oResp.results[i].ApplicationNo;
+                                var sPernr = oResp.results[i].Pernr;
+
+                                oResp.results[i].previewable = true;
+                                oResp.results[i].trustedSource = true;
+                                oResp.results[i].Url = this.getDownloadUrl(sApplicationNo, sPernr, sFileName, sDocId);
+                            }
+                        }
+                        BusyIndicator.hide();
+                        oViewModel.setProperty("/attachmentList", oResp.results);
+                        oViewModel.setProperty("/canEdit", oResp.results.length === 0);
+                    }.bind(this),
+                    error: function (oError) {
+                        BusyIndicator.hide();
+                        oViewModel.setProperty("/attachmentList", []);
+                        messenger.error(JSON.parse(oError.responseText).error.message.value);
+                    }.bind(this)
+                });
+
+
+
+            },
+
+            getDownloadUrl: function (sApplicationNo, sPernr, sFileName, sDocId) {
+                var oModel = this.getModel();
+                var sUrl = oModel.sServiceUrl + "/AttachmentEntitySet(ApplicationNo='" + sApplicationNo + "',Pernr='" + sPernr + "',Form='" + '5' + "')/$value";
+                return sUrl;
+            },
+
+            onRemoveAttachment: function (oEvent) {
+                var oSource = oEvent.getSource();
+                const oContext = oSource.getBindingContext("viewModel");
+                this.removeItem(oContext);
+            },
+            removeItem: function (oContext) {
+                var oResourceBundle = this.getResourceBundle(),
+                    oViewModel = this.getModel("viewModel"),
+                    sPath = oContext.getPath(),
+                    sFileName = oViewModel.getProperty(sPath + "/Filename"),
+                    sTitle = oResourceBundle.getText("CONFIRM_TITLE");
+
+                var sMessage = oResourceBundle.getText(
+                    "removeDocumentWarningMsg",
+                    sFileName
+                );
+                messenger.confirm(sTitle, sMessage, "Confirm", null, function () {
+                    if (sPath.split("/")[2]) {
+                        var index = sPath.split("/")[2];
+                        var data = oViewModel.getProperty("/attachmentList");
+                        this.oItemsProcessor.splice(index, 1);
+                        data.splice(index, 1);
+                        oViewModel.setProperty("/attachmentList", data);
+                        oViewModel.refresh(true);
+                    }
+
+                }.bind(this));
+            },
+            onDeleteAttachment: function (oEvent) {
+
+                var oSource = oEvent.getSource();
+                const oContext = oSource.getBindingContext("viewModel");
+
+                var oResourceBundle = this.getResourceBundle(),
+                    oViewModel = this.getModel("viewModel"),
+                    sPath = oContext.getPath(),
+                    objectAtt = oViewModel.getProperty(sPath),
+                    sFileName = oViewModel.getProperty(sPath + "/Filename"),
+                    sTitle = oResourceBundle.getText("CONFIRM_TITLE");
+
+                var sMessage = oResourceBundle.getText(
+                    "deleteDocumentWarningMsg",
+                    sFileName
+                );
+
+                messenger.confirm(sTitle, sMessage, "Confirm", null, function () {
+                    this.deleteAttachment(objectAtt);
+                }.bind(this));
+            },
+
+            deleteAttachment: function (objectAtt) {
+                var oResourceBundle = this.getResourceBundle(),
+                    oModel = this.getModel();
+                var that = this;
+                var sUrl = oModel.createKey("/AttachmentEntitySet", {
+                    ApplicationNo: objectAtt.ApplicationNo,
+                    Pernr: objectAtt.Pernr,
+                    Form: "6"
+                });
+
+                BusyIndicator.show();
+
+                oModel.remove(sUrl, {
+                    success: function () {
+
+                        BusyIndicator.hide();
+                        that.readAttachmentsData();
+
+                        messenger.success(
+                            oResourceBundle.getText("postAttDelSuccMessage")
+                        );
+
+                    }.bind(this),
+
+                    error: function (oError) {
+
+                        BusyIndicator.hide();
+
+                        messenger.error(
+                            JSON.parse(oError.responseText).error.message.value
+                        );
+
+                    }.bind(this)
+                });
+            },
+
+            onUploadTableFinished: function () {
+                var oViewModel = this.getModel("viewModel"),
+                    aAttachmentList = oViewModel.getProperty("/attachmentList") || [],
+                    iCount = aAttachmentList.length;
+                var sText = "Document (" + iCount + ")";
+                this.byId("idAttachmentCount").setText(sText);
+            },
+            onPluginActivated: function (oEvent) {
+
+                this.oItemsProcessor = [];
+                this.iNoOfAttachments = 0;
+                this.iUploadCount = 0;
+                this.sUploadMessage = "";
+
+                this.oUploadPlugin = oEvent.getParameter("oPlugin");
+
+                var oUploadActionBtn = this.byId("uploadButton"),
+                    oUploadBtn = oUploadActionBtn.getAggregation("_actionButton");
+
+                oUploadBtn.setIcon("sap-icon://upload");
+                oUploadBtn.setStyle("Emphasized");
+                oUploadBtn.setIconFirst(true);
+            },
+            onAfterRendering: function () {
+                this.getView().addStyleClass("sapUiSizeCompact");
+            },
+            onFileNameLengthExceed: function () {
+                var oResourceBundle = this.getResourceBundle();
+                messenger.error(oResourceBundle.getText("FileLengthExceededErrMsg"));
+            },
+            onFileSizeExceed: function () {
+                var oResourceBundle = this.getResourceBundle();
+                messenger.error(oResourceBundle.getText("fileSizeExceedErrorMsg"));
+            },
+
+            onFileTypeMismatch: function () {
+                var oResourceBundle = this.getResourceBundle();
+                messenger.error(oResourceBundle.getText("fileTypeMisMatchErrorMsg"));
+            },
+            itemValidationCallback: function (oItemInfo) {
+
+                var oItemDetails = oItemInfo.oItem,
+                    oViewModel = this.getModel("viewModel"),
+                    aAttachmentList = oViewModel.getProperty("/attachmentList") || [];
+
+                if (
+                    oItemDetails.getFileName() !== null &&
+                    oItemDetails.getFileName() !== undefined &&
+                    oItemDetails.getFileName().endsWith(".msg")
+                ) {
+                    let fileType = "application/vnd.ms-outlook";
+                    oItemDetails.setMediaType(fileType);
+                }
+
+                aAttachmentList.push({
+                    "Filename": oItemDetails.getFileName(),
+                    "Mimetype": oItemDetails.getMediaType(),
+                    "CreatedBy": sap.ushell.Container.getUser().getFullName(),
+                    "CreatedOn": this.formatDate(new Date())
+                });
+
+                oViewModel.setProperty("/attachmentList", aAttachmentList);
+                oViewModel.setProperty("/canEdit",false);
+
+                const { oItem } = oItemInfo;
+
+                var oItemPromise = new Promise((resolve, reject) => {
+
+                    this.oItemsProcessor.push({
+                        item: oItem,
+                        resolve: resolve,
+                        reject: reject
+                    });
+
+                });
+
+                // Required
+                this.checkMalwareValidation(oItemInfo);
+
+                return oItemPromise;
+            },
+            checkMalwareValidation: function (oItemInfo) {
+
+                var oResourceBundle = this.getResourceBundle(),
+                    oFileObject = oItemInfo.oItem.getFileObject();
+
+                if (oFileObject) {
+
+                    var reader = new FileReader();
+
+                    reader.onload = function (event) {
+
+                        var aArrayBuffer = event.currentTarget.result;
+                        var sBinaryString = this.convertArratBufferToBinary(aArrayBuffer);
+
+                        var sUrl = this.getBaseURL() + "/malware_api/scan";
+
+                        BusyIndicator.show();
+
+                        jQuery.ajax({
+                            url: sUrl,
+                            type: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            },
+                            data: sBinaryString,
+
+                            success: function (oResp) {
+
+                                if (oResp.malwareDetected) {
+                                    this.removeMalwareFile();
+                                    messenger.error(
+                                        oResourceBundle.getText("malwareFileDetectedErrorMsg")
+                                    );
+                                } else {
+                                    BusyIndicator.hide();
+                                }
+
+                            }.bind(this),
+
+                            error: function () {
+
+                                BusyIndicator.hide();
+                                this.removeMalwareFile();
+
+                                messenger.error(
+                                    oResourceBundle.getText("malwareScanFailedErrorMsg")
+                                );
+
+                            }.bind(this)
+                        });
+
+                    }.bind(this);
+
+                    reader.readAsArrayBuffer(oFileObject);
+                }
+            },
+
+            convertArratBufferToBinary: function (aArrayBufferObject) {
+
+                var binary = "";
+
+                const bytes = new Uint8Array(aArrayBufferObject);
+                const len = bytes.byteLength;
+
+                for (let i = 0; i < len; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+
+                return binary;
+            },
+
+            removeMalwareFile: function () {
+
+                var oViewModel = this.getModel("viewModel"),
+                    aAttachmentList = oViewModel.getProperty("/attachmentList");
+
+                aAttachmentList.pop();
+                this.oItemsProcessor.pop();
+
+                oViewModel.setProperty("/attachmentList", aAttachmentList);
+                oViewModel.refresh();
+
+                BusyIndicator.hide();
+            },
+
+            onUploadComplete: function (oEvent) {
+
+                var oResourceBundle = this.getResourceBundle(),
+                    staus = oEvent.getParameter("status");
+
+                this.iUploadCount = this.iUploadCount + 1;
+
+                if (staus === 500 || staus === 400 || staus === 415) {
+
+                    this.isAttachmentFail = true;
+
+                    var oParser = new DOMParser();
+                    var oResponse = oParser.parseFromString(
+                        oEvent.getParameter("response"),
+                        "text/xml"
+                    );
+
+                    var aMessages = oResponse.getElementsByTagName("message");
+
+                    if (aMessages && aMessages.length > 0) {
+                        var sMessage = aMessages[0].innerHTML;
+                        this.sUploadMessage = sMessage + "\n";
+                    }
+                }
+
+                if (this.iNoOfAttachments === this.iUploadCount) {
+
+                    BusyIndicator.hide();
+
+                    if (this.isAttachmentFail) {
+
+                        messenger.error(this.sUploadMessage);
+
+                    } else {
+
+                        if (this.sStatusCode === "DF") {
+
+                            messenger.success(
+                                oResourceBundle.getText(
+                                    "SavedMessage"
+                                ),
+                                function () {
+                                    this.onNavBack();
+                                }.bind(this)
+                            );
+
+                        } else if (this.sStatusCode === "SB") {
+
+                            messenger.success(
+                                oResourceBundle.getText(
+                                    "SubmittedMessage"
+                                ),
+                                function () {
+                                    this.onNavBack();
+                                }.bind(this)
+                            );
+
+                        }
+                    }
+                }
+            },
+            fileUpload: function (aAttachmentList, sButtonPress, Sno) {
+                var oModel = this.getModel(),
+                    aAttachments = this.oItemsProcessor,
+                    oResourceBundle = this.getResourceBundle(),
+                    sUrl = oModel.sServiceUrl;
+                var oViewModel = this.getModel("viewModel");
+                let sApplicationNo = Sno;
+                let sPernr = oViewModel.getProperty("/formDetails/Pernr");
+                var sType = "";
+                // //Set the Message
+                var sMessage = "";
+                if (sButtonPress === 'Save') {
+                    sMessage = oResourceBundle.getText("SavedSuccessMsg");
+                }
+                else if (sButtonPress === 'Submit') {
+                    sMessage = oResourceBundle.getText("SubmittedSuccessMsg");
+                }
+                //Loop And upload the files
+                if (aAttachments && aAttachments.length > 0) {
+                    this.iNoOfAttachments = aAttachments.length;
+                    var sAttachmentLength = aAttachments.length;
+                    for (var i = 0; i < aAttachments.length; i++) {
+                        var oAttachment = aAttachments[i].item;
+                        oAttachment.addHeaderField(new sap.ui.core.Item({
+                            key: "slug",
+                            text: sApplicationNo + "/" + sPernr + "/" + oAttachment.getFileName()
+                        }));
+                        oAttachment.addHeaderField(new sap.ui.core.Item({
+                            key: "X-CSRF-Token",
+                            text: oModel.getSecurityToken()
+                        }));
+                        console.log(oModel.getSecurityToken());
+                        this.oUploadPlugin.setUploadUrl(sUrl + "/AttachmentEntitySet");
+
+                        sAttachmentLength = sAttachmentLength - 1;
+                        aAttachments[i].resolve(oAttachment);
+                    }
+                }
+
+                else {
+                    messenger.success(sMessage, function () {
+                        this.getRouter().navTo("RouteDashboard", {}, {}, true);
+                    }.bind(this));
+                }
+            },
+            getBaseURL: function () {
+                var appId = this.getOwnerComponent().getManifestEntry("/sap.app/id");
+                var appPath = appId.replaceAll(".", "/");
+                var appModulePath = jQuery.sap.getModulePath(appPath);
+                return appModulePath;
+            },
         });
     });

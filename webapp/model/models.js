@@ -48,7 +48,9 @@ sap.ui.define([
                         Waivercommdate: "",
                         Waiverreason: "",
                         Relativename: ""
-                    }
+                    },
+                    attachmentList: [],
+                    RelativeMasterSet: []
                 });
                 oViewModel.setDefaultBindingMode("TwoWay");
                 return oViewModel;
