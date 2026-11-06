@@ -664,9 +664,11 @@ sap.ui.define([
                         this.oItemsProcessor.splice(index, 1);
                         data.splice(index, 1);
                         oViewModel.setProperty("/attachmentList", data);
+                        //Start of Change: 06.11.2026: Balamurugan : UploadButton and PAN Bug Fix
+                        oViewModel.setProperty("/canEdit", data.length === 0);
+                        //End of Change: 06.11.2026: Balamurugan : UploadButton and PAN Bug Fix
                         oViewModel.refresh(true);
                     }
-
                 }.bind(this));
             },
             onDeleteAttachment: function (oEvent) {

@@ -662,7 +662,10 @@ sap.ui.define([
                     let aRelatives = oData.results || [];
                     aRelatives.unshift({
                         Pernr: "",
-                        NameOfImmediateRelatives: "NA"
+                        NameOfImmediateRelatives: "NA",
+                        //Start of Change: 06.11.2026: Balamurugan : UploadButton and PAN Bug Fix
+                        PanOfImmediateRelative: ""
+                        //End of Change: 06.11.2026: Balamurugan : UploadButton and PAN Bug Fix
                     });
                     oViewModel.setProperty("/RelativeMasterSet", aRelatives);
                     oViewModel.setProperty("/formDetails/Relativename", "NA");
@@ -721,7 +724,9 @@ sap.ui.define([
             if (!sRelative) {
                 return;
             }
-            var oData = oEvent.getSource().getSelectedItem()?.getBindingContext().getObject();
+            //Start of Change: 06.11.2026: Balamurugan : UploadButton and PAN Bug Fix
+            var oData = oEvent.getSource().getSelectedItem()?.getBindingContext("viewModel").getObject();
+            //End of Change: 06.11.2026: Balamurugan : UploadButton and PAN Bug Fix
             oViewModel.setProperty("/formDetails/RelativePAN", oData.PanOfImmediateRelative);
         },
     });
