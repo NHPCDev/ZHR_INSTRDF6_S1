@@ -30,7 +30,7 @@
                     <upload:ActionsPlaceholder
                         id="uploadButton"
                         placeholderFor="UploadButtonPlaceholder"
-                        visible="{viewModel>/canEdit}"
+                        visible="{= ${viewModel>/canEdit} &amp;&amp; ${viewModel>/formDetails/Status} !== '10'}"
                     />
                 </OverflowToolbar>
             </headerToolbar>
@@ -132,13 +132,13 @@
                                 icon="sap-icon://delete"
                                 type="Transparent"
                                 press="onRemoveAttachment"
-                                visible="{= !${viewModel>Url} &amp;&amp; ${viewModel>/formDetails/Status} !== 'Submitted' }"
+                                visible="{= !${viewModel>Url} &amp;&amp; ${viewModel>/formDetails/Status} !== '10' }"
                             />
                             <Button
                                 icon="sap-icon://delete"
                                 type="Transparent"
                                 press="onDeleteAttachment"
-                                visible="{= !!${viewModel>Url} &amp;&amp; ${viewModel>/formDetails/Status} !== 'Submitted' }"
+                                visible="{= !!${viewModel>Url} &amp;&amp; ${viewModel>/formDetails/Status} !== '10' }"
                             />
                         </HBox>
                     </cells>

@@ -176,7 +176,8 @@ sap.ui.define([
                 oViewModel.setProperty("/attachmentList", []);
                 oViewModel.setProperty("/canEdit", true);
                 oViewModel.setProperty("/formDetails", {
-                    Status: "New"
+                    Status: "New",
+                    StatusText: "New"
                 });
                 this.byId("objPageHeader").setText(oResourceBundle.getText("createManageWaiverRequest"));
                 this.byId("objPageHeader1").setText(oResourceBundle.getText("createManageWaiverRequest"));
@@ -194,7 +195,7 @@ sap.ui.define([
             if (bProceed) {
                 messenger.confirm(sTitle, sText, "Confirm", null, function () {
                     BusyIndicator.show(0);
-                    this.sActionFlag = "Submitted";
+                    this.sActionFlag = "10";
                     let oPayload = this.createRequestPayload();
                     oModel.create("/WaiverregisterSet", oPayload, {
                         success: function (oResp) {
@@ -221,7 +222,7 @@ sap.ui.define([
             let that = this;
             messenger.confirm(sTitle, sText, "Confirm", null, function () {
                 BusyIndicator.show(0);
-                this.sActionFlag = "Saved";
+                this.sActionFlag = "09";
                 let oPayload = this.createRequestPayload();
                 oModel.create("/WaiverregisterSet", oPayload, {
                     success: function (oResp) {

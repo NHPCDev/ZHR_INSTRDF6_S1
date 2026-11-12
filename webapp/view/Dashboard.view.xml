@@ -311,7 +311,7 @@
                             />
                             <table:template>
                                 <ObjectStatus
-                                    text="{Status}"
+                                    text="{StatusText}"
                                     class="sapMObjectStatusMedium statusBoldText"
                                     state="{path:'Status',formatter:'.formatter.formatStatusState'}"
                                 />
